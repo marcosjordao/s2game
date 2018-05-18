@@ -11,7 +11,7 @@ using WebApp.Data;
 namespace WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180518164127_CreateDomainSchema")]
+    [Migration("20180518201728_CreateDomainSchema")]
     partial class CreateDomainSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

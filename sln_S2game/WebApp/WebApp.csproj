@@ -10,6 +10,10 @@
     <Compile Remove="Data\Migrations\20180518163652_CreateDomainSchema.Designer.cs" />
     <Compile Remove="Data\Migrations\20180518164020_AlterFabricanteToProdutora.cs" />
     <Compile Remove="Data\Migrations\20180518164020_AlterFabricanteToProdutora.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180518164127_CreateDomainSchema.cs" />
+    <Compile Remove="Data\Migrations\20180518164127_CreateDomainSchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180518195939_CreateDomainSchema.cs" />
+    <Compile Remove="Data\Migrations\20180518195939_CreateDomainSchema.Designer.cs" />
   </ItemGroup>
 
 

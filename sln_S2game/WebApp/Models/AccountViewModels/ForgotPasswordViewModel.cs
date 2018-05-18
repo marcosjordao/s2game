@@ -10,6 +10,7 @@ namespace WebApp.Models.AccountViewModels
     {
         [Required]
         [EmailAddress]
+        [Display(Name ="E-mail")]
         public string Email { get; set; }
     }
 }

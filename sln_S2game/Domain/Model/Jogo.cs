@@ -11,10 +11,11 @@ namespace Domain.Model
         [Required, MaxLength(50)]
         public string Nome { get; set; }
 
-        public JogoCategoria Categoria { get; set; }
-
+        public int? ProdutoraId { get; set; }
         public Produtora Produtora { get; set; }
 
+        [Display(Name = "Data de Compra"),
+         DataType(DataType.Date)]
         public DateTime? DataDeCompra { get; set; }
 
         public bool Ativo { get; set; }

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Controllers
 {
-    [Authorize]
     public class ProdutoraController : Controller
     {
         private readonly ApplicationDbContext _context;

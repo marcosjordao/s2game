@@ -11,22 +11,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Controllers
 {
-    public class JogoController : Controller
+    public class EmprestimoController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public JogoController(ApplicationDbContext context)
+        public EmprestimoController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Jogo
+        // GET: Emprestimo
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Jogos.Include(f => f.Produtora).ToListAsync());
+            return View(await _context.Emprestimos.ToListAsync());
         }
 
-        // GET: Jogo/Details/5
+        // GET: Emprestimo/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,41 +34,39 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos
+            var emprestimo = await _context.Emprestimos
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (jogo == null)
+            if (emprestimo == null)
             {
                 return NotFound();
             }
 
-            return View(jogo);
+            return View(emprestimo);
         }
 
-        // GET: Jogo/Create
+        // GET: Emprestimo/Create
         public IActionResult Create()
         {
-            CarregarProdutora();
             return View();
         }
 
-        // POST: Jogo/Create
+        // POST: Emprestimo/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,DataDeCompra,Ativo,ProdutoraId")] Jogo jogo)
+        public async Task<IActionResult> Create([Bind("Id,DataEmprestimo,DataDevolucao")] Emprestimo emprestimo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(jogo);
+                _context.Add(emprestimo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            CarregarProdutora(jogo.ProdutoraId);
-            return View(jogo);
+            return View(emprestimo);
         }
 
-        // GET: Jogo/Edit/5
+        // GET: Emprestimo/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +74,22 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos.SingleOrDefaultAsync(m => m.Id == id);
-            if (jogo == null)
+            var emprestimo = await _context.Emprestimos.SingleOrDefaultAsync(m => m.Id == id);
+            if (emprestimo == null)
             {
                 return NotFound();
             }
-            CarregarProdutora(jogo.ProdutoraId);
-            return View(jogo);
+            return View(emprestimo);
         }
 
-        // POST: Jogo/Edit/5
+        // POST: Emprestimo/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,DataDeCompra,Ativo,ProdutoraId")] Jogo jogo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DataEmprestimo,DataDevolucao")] Emprestimo emprestimo)
         {
-            if (id != jogo.Id)
+            if (id != emprestimo.Id)
             {
                 return NotFound();
             }
@@ -101,12 +98,12 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(jogo);
+                    _context.Update(emprestimo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JogoExists(jogo.Id))
+                    if (!EmprestimoExists(emprestimo.Id))
                     {
                         return NotFound();
                     }
@@ -117,10 +114,10 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(jogo);
+            return View(emprestimo);
         }
 
-        // GET: Jogo/Delete/5
+        // GET: Emprestimo/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -128,37 +125,30 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos
+            var emprestimo = await _context.Emprestimos
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (jogo == null)
+            if (emprestimo == null)
             {
                 return NotFound();
             }
 
-            return View(jogo);
+            return View(emprestimo);
         }
 
-        // POST: Jogo/Delete/5
+        // POST: Emprestimo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jogo = await _context.Jogos.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Jogos.Remove(jogo);
+            var emprestimo = await _context.Emprestimos.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Emprestimos.Remove(emprestimo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private void CarregarProdutora(object selectedProdutora = null)
+        private bool EmprestimoExists(int id)
         {
-            var lstProdutoras = _context.Produtoras.OrderBy(f => f.Nome);
-
-            ViewBag.ProdutoraId = new SelectList(lstProdutoras.AsNoTracking(), "Id", "Nome", selectedProdutora);
-        }
-
-        private bool JogoExists(int id)
-        {
-            return _context.Jogos.Any(e => e.Id == id);
+            return _context.Emprestimos.Any(e => e.Id == id);
         }
     }
 }

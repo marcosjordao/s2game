@@ -11,6 +11,7 @@ namespace Domain.Model
         public string Nome { get; set; }
 
         [EmailAddress, MaxLength(60)]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
 
         [Phone, MaxLength(15)]
