@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
 using WebApp.Models;
 
 namespace WebApp.Controllers
 {
+
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public HomeController(ApplicationDbContext context)
+        public HomeController()
         {
-            _context = context;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
-            var lstEmprestado = _context.Emprestimos.Where(f => !f.DataDevolucao.HasValue);
-
-            return View(lstEmprestado);
-        }
-
-        public IActionResult About()
-        {
-            return View();
+            return RedirectToAction("Index", "Emprestimo");
         }
 
         public IActionResult Error()

@@ -4,9 +4,9 @@
     ViewData["Title"] = "Jogo - Excluir";
 }
 
-<h2>Cadastro de Jogo - Excluir</h2>
+<h3>Cadastro de Jogo - Excluir</h3>
 
-<h3>Deseja realmente excluir o cadastro?</h3>
+<h4>Deseja realmente excluir o cadastro?</h4>
 <div>
     <hr />
     <dl class="dl-horizontal">
@@ -15,6 +15,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Produtora)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Produtora)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.DataDeCompra)
@@ -32,7 +38,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Excluir" class="btn btn-default" /> |
-        <a asp-action="Index">Voltar</a>
+        <input type="submit" value="Excluir" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-primary">Voltar</a>
     </form>
 </div>

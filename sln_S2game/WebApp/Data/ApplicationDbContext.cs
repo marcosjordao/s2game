@@ -14,8 +14,6 @@ namespace WebApp.Data
 
 
         public DbSet<Amigo> Amigos { get; set; }
-        public DbSet<Produtora> Produtoras { get; set; }
-        public DbSet<JogoCategoria> JogoCategorias { get; set; }
         public DbSet<Jogo> Jogos { get; set; }
         public DbSet<Emprestimo> Emprestimos { get; set; }
 
@@ -31,3 +29,5 @@ namespace WebApp.Data
         }
     }
 }
+
+//TODO: separar o Data em um novo project

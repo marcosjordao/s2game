@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApp.Data;
+using WebApp.Data.Repository;
+using WebApp.Data.Repository.Interfaces;
 using WebApp.Models;
 using WebApp.Services;
 
@@ -35,6 +33,10 @@ namespace WebApp
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddScoped<IAmigoRepository, AmigoRepository>();
+            services.AddScoped<IJogoRepository, JogoRepository>();
+            services.AddScoped<IEmprestimoRepository, EmprestimoRepository>();
 
             services.AddMvc();
         }

@@ -1,29 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Domain.Model;
 using WebApp.Data;
-using Microsoft.AspNetCore.Authorization;
+using WebApp.Data.Repository;
+using WebApp.Data.Repository.Interfaces;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class AmigoController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public AmigoController(ApplicationDbContext context)
+        private readonly IAmigoRepository _amigoRepository;
+
+        public AmigoController(IAmigoRepository AmigoRepository)
         {
-            _context = context;
+            _amigoRepository = AmigoRepository;
         }
 
         // GET: Amigo
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Amigos.ToListAsync());
+            return View(await _amigoRepository.GetAllAsync());
         }
 
         // GET: Amigo/Details/5
@@ -34,13 +35,13 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var amigo = await _context.Amigos
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var amigo = await _amigoRepository.GetAsync(id.Value);
             if (amigo == null)
             {
                 return NotFound();
             }
 
+            //TODO: exibir histórico de empréstimos no Details
             return View(amigo);
         }
 
@@ -51,16 +52,13 @@ namespace WebApp.Controllers
         }
 
         // POST: Amigo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Email,Fone")] Amigo amigo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(amigo);
-                await _context.SaveChangesAsync();
+                await _amigoRepository.AddAsync(amigo);
                 return RedirectToAction(nameof(Index));
             }
             return View(amigo);
@@ -74,7 +72,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var amigo = await _context.Amigos.SingleOrDefaultAsync(m => m.Id == id);
+            var amigo = await _amigoRepository.GetAsync(id.Value);
             if (amigo == null)
             {
                 return NotFound();
@@ -83,8 +81,6 @@ namespace WebApp.Controllers
         }
 
         // POST: Amigo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Email,Fone")] Amigo amigo)
@@ -98,8 +94,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(amigo);
-                    await _context.SaveChangesAsync();
+                   await _amigoRepository.UpdateAsync(amigo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +120,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var amigo = await _context.Amigos
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var amigo = await _amigoRepository.GetAsync(id.Value);
             if (amigo == null)
             {
                 return NotFound();
@@ -140,15 +134,14 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var amigo = await _context.Amigos.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Amigos.Remove(amigo);
-            await _context.SaveChangesAsync();
+            var amigo = await _amigoRepository.GetAsync(id);
+            await _amigoRepository.DeleteAsync(amigo);
             return RedirectToAction(nameof(Index));
         }
 
         private bool AmigoExists(int id)
         {
-            return _context.Amigos.Any(e => e.Id == id);
+            return (_amigoRepository.Get(id) != null);
         }
     }
 }

@@ -8,61 +8,59 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Model;
 using WebApp.Data;
 using Microsoft.AspNetCore.Authorization;
+using WebApp.Data.Repository.Interfaces;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class EmprestimoController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IJogoRepository _jogoRepository;
+        private readonly IAmigoRepository _amigoRepository;
+        private readonly IEmprestimoRepository _emprestimoRepository;
 
-        public EmprestimoController(ApplicationDbContext context)
+        public EmprestimoController(IEmprestimoRepository emprestimoRepository, IJogoRepository jogoRepository, IAmigoRepository amigoRepository)
         {
-            _context = context;
+            _jogoRepository = jogoRepository;
+            _amigoRepository = amigoRepository;
+            _emprestimoRepository = emprestimoRepository;
         }
 
         // GET: Emprestimo
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Emprestimos.ToListAsync());
+            return View(await _emprestimoRepository.GetEmprestimosVigentesAsync());
         }
 
-        // GET: Emprestimo/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Emprestimo/Listar
+        public async Task<IActionResult> Listar()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var emprestimo = await _context.Emprestimos
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (emprestimo == null)
-            {
-                return NotFound();
-            }
-
-            return View(emprestimo);
+            return View(await _emprestimoRepository.GetAllAsync());
         }
 
         // GET: Emprestimo/Create
         public IActionResult Create()
         {
-            return View();
+            CarregarListJogo();
+            CarregarListAmigo();
+
+            Emprestimo emprestimo = new Emprestimo();
+            emprestimo.DataEmprestimo = DateTime.Now.Date;
+            return View(emprestimo);
         }
 
         // POST: Emprestimo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataEmprestimo,DataDevolucao")] Emprestimo emprestimo)
+        public async Task<IActionResult> Create([Bind("Id,DataEmprestimo,DataDevolucao,JogoId,AmigoId")] Emprestimo emprestimo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(emprestimo);
-                await _context.SaveChangesAsync();
+                await _emprestimoRepository.AddAsync(emprestimo);
                 return RedirectToAction(nameof(Index));
             }
+            CarregarListJogo(emprestimo.JogoId);
+            CarregarListAmigo(emprestimo.AmigoId);
             return View(emprestimo);
         }
 
@@ -74,20 +72,20 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var emprestimo = await _context.Emprestimos.SingleOrDefaultAsync(m => m.Id == id);
+            var emprestimo = await _emprestimoRepository.GetAsync(id.Value);
             if (emprestimo == null)
             {
                 return NotFound();
             }
+            CarregarListJogo(emprestimo.JogoId);
+            CarregarListAmigo(emprestimo.AmigoId);
             return View(emprestimo);
         }
 
         // POST: Emprestimo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataEmprestimo,DataDevolucao")] Emprestimo emprestimo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DataEmprestimo,DataDevolucao,JogoId,AmigoId")] Emprestimo emprestimo)
         {
             if (id != emprestimo.Id)
             {
@@ -98,8 +96,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(emprestimo);
-                    await _context.SaveChangesAsync();
+                    await _emprestimoRepository.UpdateAsync(emprestimo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,6 +114,58 @@ namespace WebApp.Controllers
             return View(emprestimo);
         }
 
+
+        // GET: Emprestimo/Devolver/5
+        public async Task<IActionResult> Devolver(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var emprestimo = await _emprestimoRepository.GetAsync(id.Value);
+            if (emprestimo == null)
+            {
+                return NotFound();
+            }
+            emprestimo.DataDevolucao = DateTime.Now.Date;
+            return View(emprestimo);
+        }
+
+        // POST: Emprestimo/Devolver/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Devolver(int id, [Bind("Id,DataDevolucao,JogoId,AmigoId")] Emprestimo emprestimo)
+        {
+            if (id != emprestimo.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _emprestimoRepository.Devolver(emprestimo,
+                                                         emprestimo.DataDevolucao.Value);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmprestimoExists(emprestimo.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(emprestimo);
+        }
+
+
         // GET: Emprestimo/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -125,8 +174,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var emprestimo = await _context.Emprestimos
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var emprestimo = await _emprestimoRepository.GetAsync(id.Value);
             if (emprestimo == null)
             {
                 return NotFound();
@@ -140,15 +188,29 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var emprestimo = await _context.Emprestimos.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Emprestimos.Remove(emprestimo);
-            await _context.SaveChangesAsync();
+            var emprestimo = await _emprestimoRepository.GetAsync(id);
+            await _emprestimoRepository.DeleteAsync(emprestimo);
             return RedirectToAction(nameof(Index));
         }
 
         private bool EmprestimoExists(int id)
         {
-            return _context.Emprestimos.Any(e => e.Id == id);
+            return (_emprestimoRepository.Get(id) != null);
         }
+
+        private void CarregarListJogo(object selectedJogo = null)
+        {
+            var lstJogosAtivos = _jogoRepository.GetAtivos();
+
+            ViewBag.JogoId = new SelectList(lstJogosAtivos, "Id", "Nome", selectedJogo);
+        }
+
+        private void CarregarListAmigo(object selectedAmigo = null)
+        {
+            var lstAmigos = _amigoRepository.GetAll();
+
+            ViewBag.AmigoId = new SelectList(lstAmigos, "Id", "Nome", selectedAmigo);
+        }
+
     }
 }

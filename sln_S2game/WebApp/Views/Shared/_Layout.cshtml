@@ -26,14 +26,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">s2game</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <div>
+                        <span style="color: white;">s2game</span>
+                        <img src="~/images/s2gamelogo.png" width="27" />
+                    </div>
+                </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Início</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
                     <li><a asp-area="" asp-controller="Jogo" asp-action="Index">Jogos</a></li>
                     <li><a asp-area="" asp-controller="Amigo" asp-action="Index">Amigos</a></li>
+                    <li><a asp-area="" asp-controller="Emprestimo" asp-action="Index">Empréstimos</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -42,9 +46,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; 2018 - s2game</p>
-        </footer>
+
     </div>
 
     <environment include="Development">

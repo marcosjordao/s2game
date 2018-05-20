@@ -1,16 +1,26 @@
 ﻿@model Domain.Model.Emprestimo
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Empréstimo - Excluir";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<h3>Empréstimo - Excluir</h3>
+<h4>Deseja realmente excluir o registro?</h4>
 <div>
-    <h4>Emprestimo</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Jogo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Jogo.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Amigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Amigo.Nome)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.DataEmprestimo)
         </dt>
@@ -27,7 +37,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Voltar</a>
+        <input type="submit" value="Excluir" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-default">Voltar</a>
     </form>
 </div>

@@ -1,41 +1,73 @@
 ﻿@model IEnumerable<Domain.Model.Emprestimo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Empréstimos";
 }
 
-<h2>Index</h2>
+<h3>Jogos emprestados no momento</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Novo empréstimo
+    </a> &nbsp; | &nbsp;
+    <a asp-action="Listar">
+        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+        Histórico
+    </a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-warning" role="alert">
+        Nenhum jogo emprestado no momento
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Jogo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Amigo)
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.DataEmprestimo)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DataDevolucao)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataEmprestimo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataDevolucao)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Jogo.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amigo.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataEmprestimo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        Alterar
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        Excluir
+                    </a> | 
+                    <a asp-action="Devolver" asp-route-id="@item.Id">
+                        <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+                        Devolver
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>

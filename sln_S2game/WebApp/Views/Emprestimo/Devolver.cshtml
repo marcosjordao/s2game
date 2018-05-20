@@ -1,35 +1,30 @@
 ﻿@model Domain.Model.Emprestimo
 
 @{
-    ViewData["Title"] = "Empréstimo - Alterar";
+    ViewData["Title"] = "Empréstimo - Devolver";
 }
 
-<h2>Empréstimo - Alterar</h2>
+<h2>Empréstimo - Devolver</h2>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Devolver">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
+                <input type="hidden" asp-for="JogoId" />
                 <label asp-for="Jogo" class="control-label"></label>
-                <select asp-for="JogoId" class="form-control" asp-items="ViewBag.JogoId">
-                    <option value="">-- Selecionar Jogo --</option>
-                </select>
-                <span asp-validation-for="JogoId" class="text-danger"></span>
+                <input asp-for="Jogo.Nome" class="form-control" disabled />
             </div>
             <div class="form-group">
+                <input type="hidden" asp-for="AmigoId" />
                 <label asp-for="Amigo" class="control-label"></label>
-                <select asp-for="AmigoId" class="form-control" asp-items="ViewBag.AmigoId">
-                    <option value="">-- Selecionar Amigo --</option>
-                </select>
-                <span asp-validation-for="AmigoId" class="text-danger"></span>
+                <input asp-for="Amigo.Nome" class="form-control" disabled />
             </div>
             <div class="form-group">
                 <label asp-for="DataEmprestimo" class="control-label"></label>
-                <input asp-for="DataEmprestimo" class="form-control" />
-                <span asp-validation-for="DataEmprestimo" class="text-danger"></span>
+                <input asp-for="DataEmprestimo" class="form-control" disabled />
             </div>
             <div class="form-group">
                 <label asp-for="DataDevolucao" class="control-label"></label>
@@ -37,7 +32,7 @@
                 <span asp-validation-for="DataDevolucao" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" /> |
+                <input type="submit" value="Devolver" class="btn btn-primary" /> |
                 <a asp-action="Index" class="btn btn-default">Voltar</a>
             </div>
         </form>

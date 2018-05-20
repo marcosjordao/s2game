@@ -8,22 +8,24 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Model;
 using WebApp.Data;
 using Microsoft.AspNetCore.Authorization;
+using WebApp.Data.Repository.Interfaces;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class JogoController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IJogoRepository _jogoRepository;
 
-        public JogoController(ApplicationDbContext context)
+        public JogoController(IJogoRepository jogoRepository)
         {
-            _context = context;
+            _jogoRepository = jogoRepository;
         }
 
         // GET: Jogo
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Jogos.Include(f => f.Produtora).ToListAsync());
+            return View(await _jogoRepository.GetAllAsync());
         }
 
         // GET: Jogo/Details/5
@@ -34,37 +36,33 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var jogo = await _jogoRepository.GetAsync(id.Value);
             if (jogo == null)
             {
                 return NotFound();
             }
-
+            //TODO: exibir histórico de empréstimos no Details
             return View(jogo);
         }
 
         // GET: Jogo/Create
         public IActionResult Create()
         {
-            CarregarProdutora();
-            return View();
+            Jogo jogo = new Jogo();
+            jogo.Ativo = true;
+            return View(jogo);
         }
 
         // POST: Jogo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,DataDeCompra,Ativo,ProdutoraId")] Jogo jogo)
+        public async Task<IActionResult> Create([Bind("Id,Nome,DataDeCompra,Ativo,Produtora")] Jogo jogo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(jogo);
-                await _context.SaveChangesAsync();
+                await _jogoRepository.AddAsync(jogo);
                 return RedirectToAction(nameof(Index));
             }
-            CarregarProdutora(jogo.ProdutoraId);
             return View(jogo);
         }
 
@@ -76,21 +74,18 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos.SingleOrDefaultAsync(m => m.Id == id);
+            var jogo = await _jogoRepository.GetAsync(id.Value);
             if (jogo == null)
             {
                 return NotFound();
             }
-            CarregarProdutora(jogo.ProdutoraId);
             return View(jogo);
         }
 
         // POST: Jogo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,DataDeCompra,Ativo,ProdutoraId")] Jogo jogo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,DataDeCompra,Ativo,Produtora")] Jogo jogo)
         {
             if (id != jogo.Id)
             {
@@ -101,8 +96,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(jogo);
-                    await _context.SaveChangesAsync();
+                    await _jogoRepository.UpdateAsync(jogo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -128,8 +122,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var jogo = await _context.Jogos
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var jogo = await _jogoRepository.GetAsync(id.Value);
             if (jogo == null)
             {
                 return NotFound();
@@ -143,22 +136,14 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jogo = await _context.Jogos.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Jogos.Remove(jogo);
-            await _context.SaveChangesAsync();
+            var jogo = await _jogoRepository.GetAsync(id);
+            await _jogoRepository.DeleteAsync(jogo);
             return RedirectToAction(nameof(Index));
-        }
-
-        private void CarregarProdutora(object selectedProdutora = null)
-        {
-            var lstProdutoras = _context.Produtoras.OrderBy(f => f.Nome);
-
-            ViewBag.ProdutoraId = new SelectList(lstProdutoras.AsNoTracking(), "Id", "Nome", selectedProdutora);
         }
 
         private bool JogoExists(int id)
         {
-            return _context.Jogos.Any(e => e.Id == id);
+            return (_jogoRepository.Get(id) != null);
         }
     }
 }

@@ -11,9 +11,10 @@ using WebApp.Data;
 namespace WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180519023025_UpdateDomainSchema")]
+    partial class UpdateDomainSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,11 +76,27 @@ namespace WebApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Produtora");
+                    b.Property<int?>("ProdutoraId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProdutoraId");
+
                     b.ToTable("Jogos");
+                });
+
+            modelBuilder.Entity("Domain.Model.Produtora", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Produtoras");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -252,6 +269,13 @@ namespace WebApp.Data.Migrations
                         .WithMany()
                         .HasForeignKey("JogoId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Domain.Model.Jogo", b =>
+                {
+                    b.HasOne("Domain.Model.Produtora", "Produtora")
+                        .WithMany()
+                        .HasForeignKey("ProdutoraId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -18,9 +18,11 @@ namespace Domain.Model
 
         [Required]
         [Display(Name = "Emprestado em")]
+        [DataType(DataType.Date)]
         public DateTime DataEmprestimo { get; set; }
 
         [Display(Name = "Devolvido em")]
+        [DataType(DataType.Date)]
         public DateTime? DataDevolucao { get; set; }
     }
 }
