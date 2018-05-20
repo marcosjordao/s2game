@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model
@@ -19,5 +20,7 @@ namespace Domain.Model
         public DateTime? DataDeCompra { get; set; }
 
         public bool Ativo { get; set; }
+
+        public List<Emprestimo> Emprestimos { get; set; }
     }
 }

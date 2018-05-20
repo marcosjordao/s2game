@@ -75,7 +75,8 @@ namespace WebApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Produtora");
+                    b.Property<string>("Produtora")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 

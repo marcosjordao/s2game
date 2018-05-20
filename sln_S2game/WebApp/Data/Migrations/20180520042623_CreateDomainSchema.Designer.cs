@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180519034746_UpdateDomainSchema2")]
-    partial class UpdateDomainSchema2
+    [Migration("20180520042623_CreateDomainSchema")]
+    partial class CreateDomainSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,7 +76,8 @@ namespace WebApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Produtora");
+                    b.Property<string>("Produtora")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 

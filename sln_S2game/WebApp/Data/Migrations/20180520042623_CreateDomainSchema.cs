@@ -37,58 +37,19 @@ namespace WebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JogoCategorias",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Descricao = table.Column<string>(maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JogoCategorias", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Produtoras",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Produtoras", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Jogos",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Ativo = table.Column<bool>(nullable: false),
-                    CategoriaId = table.Column<int>(nullable: true),
                     DataDeCompra = table.Column<DateTime>(nullable: true),
                     Nome = table.Column<string>(maxLength: 50, nullable: false),
-                    ProdutoraId = table.Column<int>(nullable: true)
+                    Produtora = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Jogos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Jogos_JogoCategorias_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "JogoCategorias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Jogos_Produtoras_ProdutoraId",
-                        column: x => x.ProdutoraId,
-                        principalTable: "Produtoras",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,16 +104,6 @@ namespace WebApp.Data.Migrations
                 table: "Emprestimos",
                 column: "JogoId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Jogos_CategoriaId",
-                table: "Jogos",
-                column: "CategoriaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Jogos_ProdutoraId",
-                table: "Jogos",
-                column: "ProdutoraId");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                 table: "AspNetUserTokens",
@@ -176,12 +127,6 @@ namespace WebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Jogos");
-
-            migrationBuilder.DropTable(
-                name: "JogoCategorias");
-
-            migrationBuilder.DropTable(
-                name: "Produtoras");
 
             migrationBuilder.DropIndex(
                 name: "UserNameIndex",

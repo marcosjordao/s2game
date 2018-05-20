@@ -13,18 +13,39 @@ namespace WebApp.Data.Repository
         {
         }
 
-        public IEnumerable<Jogo> GetAtivos()
+
+        public new Jogo Get(int id)
         {
             return _dbContext.Jogos
-                             .Where(f => f.Ativo)
+                             .Include(f => f.Emprestimos)
+                                .ThenInclude(e => e.Amigo)
+                             .SingleOrDefault(f => f.Id == id);
+        }
+
+        public async new Task<Jogo> GetAsync(int id)
+        {
+            return await _dbContext.Jogos
+                                   .Include(f => f.Emprestimos)
+                                       .ThenInclude(e => e.Amigo)
+                                   .SingleOrDefaultAsync(f => f.Id == id);
+        }
+
+        public IEnumerable<Jogo> GetDisponiveis()
+        {
+            return _dbContext.Jogos
+                             .Include(f => f.Emprestimos)
+                             .Where(f => f.Ativo &&
+                                    !f.Emprestimos.Any(e => e.DataDevolucao == null))
                              .OrderBy(f => f.Nome)
                              .ToList();
         }
 
-        public async Task<IEnumerable<Jogo>> GetAtivosAsync()
+        public async Task<IEnumerable<Jogo>> GetDisponiveisAsync()
         {
             return await _dbContext.Jogos
-                                   .Where(f => f.Ativo)
+                                   .Include(f => f.Emprestimos)
+                                   .Where(f => f.Ativo &&
+                                          !f.Emprestimos.Any(e => e.DataDevolucao == null))
                                    .OrderBy(f => f.Nome)
                                    .ToListAsync();
         }

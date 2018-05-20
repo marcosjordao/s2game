@@ -200,7 +200,7 @@ namespace WebApp.Controllers
 
         private void CarregarListJogo(object selectedJogo = null)
         {
-            var lstJogosAtivos = _jogoRepository.GetAtivos();
+            var lstJogosAtivos = _jogoRepository.GetDisponiveis();
 
             ViewBag.JogoId = new SelectList(lstJogosAtivos, "Id", "Nome", selectedJogo);
         }

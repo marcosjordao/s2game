@@ -6,7 +6,7 @@ namespace WebApp.Data.Repository.Interfaces
 {
     public interface IJogoRepository : IRepositoryBase<Jogo>
     {
-        IEnumerable<Jogo> GetAtivos();
-        Task<IEnumerable<Jogo>> GetAtivosAsync();
+        IEnumerable<Jogo> GetDisponiveis();
+        Task<IEnumerable<Jogo>> GetDisponiveisAsync();
     }
 }

@@ -14,6 +14,12 @@
     <Compile Remove="Data\Migrations\20180518164127_CreateDomainSchema.Designer.cs" />
     <Compile Remove="Data\Migrations\20180518195939_CreateDomainSchema.cs" />
     <Compile Remove="Data\Migrations\20180518195939_CreateDomainSchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180518201728_CreateDomainSchema.cs" />
+    <Compile Remove="Data\Migrations\20180518201728_CreateDomainSchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180519023025_UpdateDomainSchema.cs" />
+    <Compile Remove="Data\Migrations\20180519023025_UpdateDomainSchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180519034746_UpdateDomainSchema2.cs" />
+    <Compile Remove="Data\Migrations\20180519034746_UpdateDomainSchema2.Designer.cs" />
   </ItemGroup>
 
 
@@ -31,10 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Service\" />
   </ItemGroup>
 
 </Project>
