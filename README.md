@@ -1,2 +1,2 @@
 # s2game
-Gerenciamento de Jogos
+Software desenvolvido como processo de teste para a S2IT
