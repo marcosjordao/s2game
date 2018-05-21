@@ -202,6 +202,14 @@ namespace WebApp.Controllers
         {
             var lstJogosAtivos = _jogoRepository.GetDisponiveis();
 
+            if (selectedJogo != null)
+            {
+                if (!lstJogosAtivos.Any(f => f.Id == (int) selectedJogo))
+                {
+                    lstJogosAtivos = lstJogosAtivos.Append(_jogoRepository.Get((int) selectedJogo));
+                }
+            }
+
             ViewBag.JogoId = new SelectList(lstJogosAtivos, "Id", "Nome", selectedJogo);
         }
 
